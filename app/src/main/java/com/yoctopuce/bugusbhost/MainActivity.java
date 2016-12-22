@@ -54,8 +54,8 @@ public class MainActivity extends ActionBarActivity
             return;
         }
         for (UsbDevice usbdevice : connectedDevices.values()) {
-            int deviceId = usbdevice.getProductId();
-            int vendorId = usbdevice.getVendorId();
+            String deviceName = usbdevice.getProductName();
+            String vendorName = usbdevice.getManufacturerName();
             int interfaceCount = usbdevice.getInterfaceCount();
             int configurationCount = 0;
             String tmp_serial = "unknown";
@@ -64,23 +64,17 @@ public class MainActivity extends ActionBarActivity
                 configurationCount = usbdevice.getConfigurationCount();
             }
             log("====================================");
-            log(String.format("Detected %x:%x device (serial=%s)", vendorId, deviceId, tmp_serial));
-            if (interfaceCount < 1) {
-                log(String.format("drop device because it has no interfaces %x:%x:%s %d interfaces", vendorId, deviceId, tmp_serial, interfaceCount));
-            }
-            String line = String.format("%d configuration and %d interface reported by UsbDevice object", configurationCount, interfaceCount);
-            if (interfaceCount < 1) {
-                line = "!!!! " + line +" !!!!";
-            }
-            log(line);
+            log(String.format("Detected device:\n" +
+                    "Manufacturer: %s\n" +
+                    "Device: %s\n" +
+                    "Serial: %s\n" +
+                    "Interface count: %x\n", vendorName, deviceName, tmp_serial, interfaceCount));
+
             for (int j = 0; j < configurationCount; j++) {
                 UsbConfiguration configuration = usbdevice.getConfiguration(j);
                 int config_interfaces = configuration.getInterfaceCount();
-                log(String.format("   configuration %d report %d interfaces", j, config_interfaces));
+                log(String.format("   USB configuration %d reported %d interfaces", j, config_interfaces));
             }
-
-
         }
-
     }
 }
